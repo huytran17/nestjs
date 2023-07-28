@@ -39,12 +39,12 @@ export class CatController {
   @Post()
   @HttpCode(201)
   create(@Body() catDetails: Omit<Cat, 'id'>): string {
-    return `this is create cat method ${catDetails}`;
+    return `this is create cat method ${JSON.stringify(catDetails)}`;
   }
 
   @Put(':id')
   update(@Param('id') id: string, @Body() catDetails: Omit<Cat, 'id'>): string {
-    return `this is update cat method ${catDetails}`;
+    return `this is update cat method ${JSON.stringify(catDetails)}`;
   }
 
   @Get('/async/findOne')
