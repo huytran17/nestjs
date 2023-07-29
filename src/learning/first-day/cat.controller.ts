@@ -13,6 +13,7 @@ import {
   HttpStatus,
   ParseIntPipe,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { Response } from 'express';
 import { ValidateIntPipe } from './validate-int-pipe';
@@ -22,6 +23,7 @@ import { RolesGuard } from './roles.guard';
 
 import Cat from '../model/cat.entity';
 import { CatService } from './cat.service';
+import { TransformInterceptor } from './transform.interceptor';
 
 @Controller('cat')
 export class CatController {
@@ -38,6 +40,7 @@ export class CatController {
   }
 
   @Get(':id')
+  @UseInterceptors(TransformInterceptor)
   async findOne(@Param() params: { id: number }): Promise<Cat> {
     return this.catService.findOne(Number(params.id));
   }
@@ -48,6 +51,7 @@ export class CatController {
   }
 
   @Get()
+  @UseInterceptors(TransformInterceptor)
   async findAll(): Promise<Cat[]> {
     return this.catService.findAll();
   }
