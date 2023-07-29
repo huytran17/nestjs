@@ -11,6 +11,7 @@ import {
   Header,
   Res,
   HttpStatus,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { Response } from 'express';
 
@@ -23,7 +24,9 @@ export class CatController {
 
   @Get('/version')
   @Header('Cache-Control', 'none')
-  async checkVersion(@Query('v') v: number): Promise<string> {
+  async checkVersion(
+    @Query('v', new ParseIntPipe()) v: number,
+  ): Promise<string> {
     return this.catService.checkVersion(Number(v));
   }
 
@@ -38,8 +41,8 @@ export class CatController {
   }
 
   @Delete(':id')
-  async deleteOne(@Param('id') id: number): Promise<string> {
-    return this.catService.deleteOne(Number(id));
+  async deleteOne(@Param('id', ParseIntPipe) id: number): Promise<string> {
+    return this.catService.deleteOne(id);
   }
 
   @Post()
@@ -52,9 +55,13 @@ export class CatController {
 
   @Put(':id')
   async update(
-    @Param('id') id: number,
+    @Param(
+      'id',
+      new ParseIntPipe({ errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE }),
+    )
+    id: number,
     @Body() catDetails: Omit<Cat, 'id'>,
   ): Promise<Cat | undefined> {
-    return this.catService.update(Number(id), catDetails);
+    return this.catService.update(id, catDetails);
   }
 }
