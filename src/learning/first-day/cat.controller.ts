@@ -12,10 +12,13 @@ import {
   Res,
   HttpStatus,
   ParseIntPipe,
+  UseGuards,
 } from '@nestjs/common';
 import { Response } from 'express';
 import { ValidateIntPipe } from './validate-int-pipe';
 import { CatByIdPipe } from './cat-by-id.pipe';
+import { Roles } from './roles.decorator';
+import { RolesGuard } from './roles.guard';
 
 import Cat from '../model/cat.entity';
 import { CatService } from './cat.service';
@@ -26,6 +29,8 @@ export class CatController {
 
   @Get('/version')
   @Header('Cache-Control', 'none')
+  @Roles('admin')
+  @UseGuards(RolesGuard)
   async checkVersion(
     @Query('v', new ValidateIntPipe()) v: number,
   ): Promise<string> {
