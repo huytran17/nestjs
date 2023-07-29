@@ -15,6 +15,7 @@ import {
 } from '@nestjs/common';
 import { Response } from 'express';
 import { ValidateIntPipe } from './validate-int-pipe';
+import { CatByIdPipe } from './cat-by-id.pipe';
 
 import Cat from '../model/cat.entity';
 import { CatService } from './cat.service';
@@ -34,6 +35,11 @@ export class CatController {
   @Get(':id')
   async findOne(@Param() params: { id: number }): Promise<Cat> {
     return this.catService.findOne(Number(params.id));
+  }
+
+  @Get('/pipe/:id')
+  async pipeCatId(@Param('id', CatByIdPipe) cat: Cat): Promise<Cat> {
+    return cat;
   }
 
   @Get()
