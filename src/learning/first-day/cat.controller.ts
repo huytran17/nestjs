@@ -14,6 +14,7 @@ import {
   ParseIntPipe,
 } from '@nestjs/common';
 import { Response } from 'express';
+import { ValidateIntPipe } from './validate-int-pipe';
 
 import Cat from '../model/cat.entity';
 import { CatService } from './cat.service';
@@ -25,7 +26,7 @@ export class CatController {
   @Get('/version')
   @Header('Cache-Control', 'none')
   async checkVersion(
-    @Query('v', new ParseIntPipe()) v: number,
+    @Query('v', new ValidateIntPipe()) v: number,
   ): Promise<string> {
     return this.catService.checkVersion(Number(v));
   }
