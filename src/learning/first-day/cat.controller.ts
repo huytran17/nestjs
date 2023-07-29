@@ -9,7 +9,10 @@ import {
   Controller,
   HttpCode,
   Header,
+  Res,
+  HttpStatus,
 } from '@nestjs/common';
+import { Response } from 'express';
 
 import Cat from '../model/cat.entity';
 import { CatService } from './cat.service';
@@ -41,8 +44,10 @@ export class CatController {
 
   @Post()
   @HttpCode(201)
-  async create(@Body() catDetails: Omit<Cat, 'id'>): Promise<Cat> {
-    return this.catService.create(catDetails);
+  async create(@Res() res: Response, @Body() catDetails: Omit<Cat, 'id'>) {
+    const created = await this.catService.create(catDetails);
+
+    res.status(HttpStatus.CREATED).json(created);
   }
 
   @Put(':id')
