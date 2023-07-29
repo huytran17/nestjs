@@ -12,45 +12,44 @@ import {
 } from '@nestjs/common';
 
 import Cat from '../model/cat.entity';
+import { CatService } from './cat.service';
 
 @Controller('cat')
 export class CatController {
+  constructor(private catService: CatService) {}
+
   @Get('/version')
   @Header('Cache-Control', 'none')
-  checkVersion(@Query('v') v: number): string {
-    return `current version: ${v}`;
+  async checkVersion(@Query('v') v: number): Promise<string> {
+    return this.catService.checkVersion(Number(v));
   }
 
   @Get(':id')
-  findOne(@Param() params: Record<string, unknown>): string {
-    return `found a cat with id ${params.id}`;
+  async findOne(@Param() params: { id: number }): Promise<Cat> {
+    return this.catService.findOne(Number(params.id));
   }
 
   @Get()
-  findAll(): string {
-    return 'this is findAll method';
+  async findAll(): Promise<Cat[]> {
+    return this.catService.findAll();
   }
 
   @Delete(':id')
-  deleteOne(@Param('id') id: string): string {
-    return `deleted a cat with id ${id}`;
+  async deleteOne(@Param('id') id: number): Promise<string> {
+    return this.catService.deleteOne(Number(id));
   }
 
   @Post()
   @HttpCode(201)
-  create(@Body() catDetails: Omit<Cat, 'id'>): string {
-    return `this is create cat method ${JSON.stringify(catDetails)}`;
+  async create(@Body() catDetails: Omit<Cat, 'id'>): Promise<Cat> {
+    return this.catService.create(catDetails);
   }
 
   @Put(':id')
-  update(@Param('id') id: string, @Body() catDetails: Omit<Cat, 'id'>): string {
-    return `this is update cat method ${JSON.stringify(catDetails)}`;
-  }
-
-  @Get('/async/findOne')
-  async findOneAsync(): Promise<string> {
-    return await new Promise((resolve) =>
-      setTimeout(() => resolve('async findOne is called'), 2000),
-    );
+  async update(
+    @Param('id') id: number,
+    @Body() catDetails: Omit<Cat, 'id'>,
+  ): Promise<Cat | undefined> {
+    return this.catService.update(Number(id), catDetails);
   }
 }
