@@ -1,8 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Scope } from '@nestjs/common';
 import Cat from '../model/cat.entity';
 import { CatsData } from '../model/cat.data';
 
-@Injectable()
+@Injectable({ scope: Scope.DEFAULT })
 export class CatService {
   private cats: Cat[] = CatsData;
 
